@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - B2_KEY_ID=${B2_KEY_ID}
+      - B2_ACCESS_KEY=${B2_ACCESS_KEY}
+      - B2_BUCKET=${B2_BUCKET}
+      - B2_REGION=${B2_REGION}
