@@ -9,6 +9,7 @@ services:
       - .env
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./src/keys/:/etc/nginx/keys
       - nginx_cache:/var/cache/nginx
 volumes:
   nginx_cache:

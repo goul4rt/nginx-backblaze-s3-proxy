@@ -1,8 +1,11 @@
-# nginx-backblaze-s3-proxy
+# nginx-backblaze-s3-proxy WITH SSL
 
 This project sets up an Nginx proxy to interact with Backblaze B2 storage using Docker. 
 It provides a convenient way to manage and serve files from a Backblaze B2 bucket through an Nginx proxy. 
 This setup is idealized to act as a cache layer between your machines and the Backblaze B2 buckets, reducing costs by handling only GET requests.
+
+## To add SSL
+Create the folder ```src/keys/``` inside keys, insert your cert and key.
 
 ## How to Use
 
