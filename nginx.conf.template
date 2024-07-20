@@ -1,21 +1,25 @@
 worker_processes 1;
 
-events {
-    worker_connections 1024;
+events {    
+    worker_connections  8192;
 }
 
 http {
     log_format debug '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$request_uri" '
-                      '"$b2_endpoint$request_uri"';
+                      '"$b2_endpoint$request_uri" '
+                      'Cache Status: $upstream_cache_status';
 
     access_log /var/log/nginx/access.log debug;
+
+    limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+    proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:$CACHE_RAM max_size=$CACHE_DISK inactive=$CACHE_INACTIVITY use_temp_path=off loader_threshold=300 loader_files=200;
 
     server {
         listen 80;
 
-        location /debug-url {
+        location /$DEBUG_UUID {
             set $b2_key_id $B2_KEY_ID;
             set $b2_access_key $B2_ACCESS_KEY;
             set $b2_bucket $B2_BUCKET;
@@ -27,7 +31,21 @@ http {
         }
 
         location / {
+            limit_conn conn_limit $MAX_CONNECTIONS_PER_IP;
             resolver 8.8.8.8;
+
+            # Check if ALLOWED_REFERER or ALLOWED_HEADER is set
+            set $allow_request 1;
+            if ($http_referer !~* "$ALLOWED_REFERER") {
+                set $allow_request 0;
+            }
+            if ($http_header_with_string !~* "$ALLOWED_HEADER") {
+                set $allow_request 0;
+            }
+
+            if ($allow_request = 0) {
+                return 418; # Proíbe requisições que não atendem aos critérios
+            }
 
             set $b2_key_id $B2_KEY_ID;
             set $b2_access_key $B2_ACCESS_KEY;
@@ -35,31 +53,33 @@ http {
             set $b2_region $B2_REGION;
             set $b2_endpoint https://s3.$B2_REGION.backblazeb2.com/$b2_bucket;
 
-            proxy_cache_valid 200 302 10m;
+            proxy_cache my_cache;
+            proxy_cache_key "$scheme://$host$uri";  
+            proxy_cache_valid 200 10m;
             proxy_cache_valid 404 1m;
 
             proxy_set_header Host s3.$B2_REGION.backblazeb2.com;
             proxy_set_header Date $date_gmt;
 
-            # Pass the request to the Backblaze endpoint
             proxy_pass $b2_endpoint$request_uri;
 
             proxy_hide_header x-amz-id-2;
             proxy_hide_header x-amz-request-id;
             proxy_hide_header Set-Cookie;
             proxy_ignore_headers "Set-Cookie" "Cache-Control" "Expires";
-            proxy_hide_header Content-Disposition; # Ensure Content-Disposition header is not forcing download
+            proxy_hide_header Content-Disposition;
 
-            # Ensure the Content-Type header is set correctly
-            add_header Content-Type $sent_http_content_type;
+            add_header Content-Type $sent_http_content_type;    
 
-            proxy_buffering off;
+            # Time in user browser
+            add_header Cache-Control "max-age=$CACHE_MAX_AGE";
+            
+            proxy_buffering on;
         }
 
         location ~ /health {
             return 200 'OK';
             add_header Content-Type text/plain;
-            add_header X-B2-BUCKET $B2_BUCKET;
         }
     }
 }

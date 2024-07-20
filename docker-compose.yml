@@ -5,8 +5,10 @@ services:
     build: .
     ports:
       - "80:80"
-    environment:
-      - B2_KEY_ID=${B2_KEY_ID}
-      - B2_ACCESS_KEY=${B2_ACCESS_KEY}
-      - B2_BUCKET=${B2_BUCKET}
-      - B2_REGION=${B2_REGION}
+    env_file:
+      - .env
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - nginx_cache:/var/cache/nginx
+volumes:
+  nginx_cache:

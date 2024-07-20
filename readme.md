@@ -66,3 +66,7 @@ For similar projects, you can refer to the [nginx-s3-gateway](https://github.com
 - **Build or runtime issues**: Check Docker and Nginx logs for detailed error messages.
 
 Feel free to open issues or submit pull requests if you encounter any problems or have suggestions for improvements.
+
+## Extra
+Some references to studie:
+https://docs.nginx.com/nginx/admin-guide/content-cache/content-caching/
