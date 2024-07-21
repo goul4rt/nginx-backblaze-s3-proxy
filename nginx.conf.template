@@ -49,15 +49,6 @@ http {
             limit_conn conn_limit $MAX_CONNECTIONS_PER_IP;
             resolver 8.8.8.8;
 
-            # Check if ALLOWED_REFERER or ALLOWED_HEADER is set
-            set $allow_request 1;
-            if ($http_referer !~* "$ALLOWED_REFERER") {
-                set $allow_request 0;
-            }
-            if ($allow_request = 0) {
-                return 418; # Proíbe requisições que não atendem aos critérios
-            }
-
             set $b2_key_id $B2_KEY_ID;
             set $b2_access_key $B2_ACCESS_KEY;
             set $b2_bucket $B2_BUCKET;
