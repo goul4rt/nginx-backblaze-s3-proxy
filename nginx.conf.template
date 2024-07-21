@@ -17,6 +17,13 @@ http {
     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:$CACHE_RAM max_size=$CACHE_DISK inactive=$CACHE_INACTIVITY use_temp_path=off loader_threshold=300 loader_files=200;
 
     server {
+        listen 443 ssl default_server;
+        ssl_certificate /etc/nginx/keys/key.pem;
+        ssl_certificate_key /etc/nginx/keys/cert.pem;
+        return 444;
+    }
+
+    server {
         listen 443 ssl;
         server_name *.$ALLOWED_REFERER;
 
