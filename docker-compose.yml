@@ -11,5 +11,10 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./src/keys/:/etc/nginx/keys
       - nginx_cache:/var/cache/nginx
+    deploy:
+      resources:
+        reservations:
+          cpus: "4"
+          memory: "4G"
 volumes:
   nginx_cache:
