@@ -14,6 +14,10 @@ http {
                       'Cache Status: $upstream_cache_status';
 
     access_log off;
+    proxy_read_timeout 90s;  # Aumenta o timeout para leitura de resposta do upstream
+    proxy_connect_timeout 60s;  # Aumenta o timeout para conexão ao upstream
+    proxy_send_timeout 60s;  # Aumenta o timeout para enviar dados ao upstream
+
 
     limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:$CACHE_RAM max_size=$CACHE_DISK inactive=$CACHE_INACTIVITY use_temp_path=off loader_threshold=300 loader_files=200;
@@ -77,7 +81,7 @@ http {
             proxy_cache_valid 200 72h;
             proxy_cache_valid 404 1m;
             proxy_cache_min_uses 2;  # Cacheia após duas solicitações
-            proxy_cache_lock on;  # Evita requests simultâneos de cache miss
+            proxy_cache_lock off;  # Evita requests simultâneos de cache miss
             proxy_cache_lock_timeout 10s;
 
             proxy_set_header Host s3.$B2_REGION.backblazeb2.com;
