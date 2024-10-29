@@ -1,16 +1,14 @@
-[nginx-http-auth]
-enabled = true
-port = http,https
-filter = nginx-http-auth
-logpath = /var/log/nginx/access.log
-maxretry = 3
-bantime = 3600
-
-[nginx-dos]
-enabled = true
-port = http,https
-filter = nginx-dos
-logpath = /var/log/nginx/access.log
+[DEFAULT]
+ignoreip = 127.0.0.1/8
+bantime  = 3600
+findtime  = 600
 maxretry = 5
-findtime = 600
+
+# Ativa apenas a jail do Nginx
+[nginx-dos]
+enabled  = true
+filter   = nginx-dos
+action   = iptables[name=HTTP, port=http, protocol=tcp]
+logpath  = /var/log/nginx/access.log
+maxretry = 10
 bantime = 600
