@@ -4,7 +4,10 @@ bantime  = 3600
 findtime  = 600
 maxretry = 5
 
-# Ativa apenas a jail do Nginx
+# Desativar todas as jails padrão
+[sshd]
+enabled = false
+
 [nginx-dos]
 enabled  = true
 filter   = nginx-dos
