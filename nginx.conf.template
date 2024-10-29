@@ -60,7 +60,7 @@ http {
 
         location / {
             limit_conn conn_limit $MAX_CONNECTIONS_PER_IP;
-            resolver 8.8.8.8;
+            resolver 8.8.8.8 ipv6=off;  # Desativa IPv6 para resolução de DNS
             
             if ($http_host !~* $ALLOWED_HOST_REGEX) {
                 return 425;
