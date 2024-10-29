@@ -15,7 +15,7 @@ COPY nginx.conf.template /etc/nginx/nginx.conf.template
 # Copia o script de entrada e monitoramento
 COPY entrypoint.sh /entrypoint.sh
 COPY cleanup.sh /cleanup.sh
-COPY monitor.sh /monitor.sh  # Adiciona o monitoramento de I/O e largura de banda
+COPY monitor.sh /monitor.sh
 
 # Copia a configuração do Fail2Ban
 COPY fail2ban/jail.local /etc/fail2ban/jail.local
