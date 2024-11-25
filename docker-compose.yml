@@ -18,8 +18,8 @@ services:
           cpus: "0.05"          # Reserve 5% of a single CPU core (~2.7 GHz machine)
           memory: "128M"        # Reserve minimal memory for caching
         limits:
-          cpus: "0.15"          # Limit to 15% of a single CPU core
-          memory: "256M"        # Limit memory usage to 256 MB
+          cpus: "1.5"          # Limit to 15% of a single CPU core
+          memory: "3000M"        # Limit memory usage to 256 MB
 volumes:
   nginx_cache:
     driver_opts:
