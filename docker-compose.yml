@@ -23,6 +23,5 @@ services:
 volumes:
   nginx_cache:
     driver_opts:
-      type: "tmpfs"             # Use temporary file storage for faster access
+      type: "tmpfs"
       device: "tmpfs"
-      size: "1073741824"        # Limit cache directory to 1 GB
