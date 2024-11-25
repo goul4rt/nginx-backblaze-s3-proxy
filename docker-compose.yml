@@ -3,6 +3,7 @@ version: '3.8'
 services:
   nginx:
     build: .
+    network_mode: host         # Use the host's network stack
     ports:
       - "443:443"
     env_file:
@@ -14,7 +15,14 @@ services:
     deploy:
       resources:
         reservations:
-          cpus: "4"
-          memory: "4G"
+          cpus: "0.05"          # Reserve 5% of a single CPU core (~2.7 GHz machine)
+          memory: "128M"        # Reserve minimal memory for caching
+        limits:
+          cpus: "0.15"          # Limit to 15% of a single CPU core
+          memory: "256M"        # Limit memory usage to 256 MB
 volumes:
   nginx_cache:
+    driver_opts:
+      type: "tmpfs"             # Use temporary file storage for faster access
+      device: "tmpfs"
+      size: "1073741824"        # Limit cache directory to 1 GB
